@@ -1,0 +1,1061 @@
+/* ==========================================================================
+   City Care Clinic - Restrained Professional Clinic Design System
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --bg-page: #F8F6F0;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F3EFE6;
+  --bg-elevated: #FAF8F5;
+
+  --text-main: #141C24;
+  --text-muted: #4B5563;
+  --text-dim: #6B7280;
+
+  --border-line: #E2DBD0;
+  --border-strong: #C8BFB2;
+
+  --accent-pine: #1B4332;
+  --accent-pine-hover: #143527;
+  --accent-pine-light: #E8F0EC;
+
+  --accent-terracotta: #A33A26;
+  --accent-terracotta-light: #FCECE8;
+
+  --status-active-bg: #EAF4EE;
+  --status-active-text: #165636;
+  --status-cancelled-bg: #FDF2F2;
+  --status-cancelled-text: #991B1B;
+
+  /* Typography */
+  --font-serif: "Georgia", "Newsreader", "Charter", serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Consolas", monospace;
+
+  /* Spacing */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-phone: 32px;
+
+  /* Transitions */
+  --transition-smooth: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Accessible visible focus states */
+:focus-visible {
+  outline: 2px solid var(--accent-pine);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* App Container */
+.clinic-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+/* ==========================================================================
+   Header Component
+   ========================================================================== */
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--border-line);
+  margin-bottom: 28px;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  background-color: var(--accent-pine);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.brand-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.connected {
+  background-color: #10B981;
+}
+
+.status-dot.connecting {
+  background-color: #F59E0B;
+}
+
+.try-call-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: var(--accent-pine);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-smooth);
+}
+
+.try-call-button:hover:not(:disabled) {
+  background-color: var(--accent-pine-hover);
+}
+
+.try-call-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Dashboard Layout (Left / Right Columns)
+   ========================================================================== */
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.dashboard-left {
+  position: sticky;
+  top: 24px;
+}
+
+.dashboard-right {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Shared Card Panel */
+.card-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-line);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.panel-caption {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.count-pill {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-line);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Loading & Empty States */
+.panel-loading, .empty-state, .panel-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border-line);
+  border-top-color: var(--accent-pine);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-icon {
+  color: var(--border-strong);
+  margin-bottom: 12px;
+}
+
+.empty-title {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  max-width: 320px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Transcript Panel
+   ========================================================================== */
+
+.transcript-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);
+  min-height: 520px;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
+}
+
+.live-indicator {
+  width: 6px;
+  height: 6px;
+  background-color: #10B981;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.9); }
+}
+
+.transcript-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.transcript-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.transcript-bubble {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 1.45;
+  border: 1px solid var(--border-line);
+}
+
+.transcript-bubble.user-bubble {
+  background-color: var(--bg-subtle);
+  border-left: 3px solid var(--text-dim);
+}
+
+.transcript-bubble.bot-bubble {
+  background-color: var(--accent-pine-light);
+  border-left: 3px solid var(--accent-pine);
+}
+
+.transcript-bubble.interim {
+  opacity: 0.75;
+}
+
+.bubble-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.speaker-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.bubble-time {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.bubble-text {
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.cursor-blink {
+  display: inline-block;
+  color: var(--accent-pine);
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==========================================================================
+   Doctors & Schedule List
+   ========================================================================== */
+
+.speciality-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-chip {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  border: 1px solid var(--border-line);
+  background-color: var(--bg-surface);
+  color: var(--text-muted);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.filter-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text-main);
+}
+
+.filter-chip.active {
+  background-color: var(--accent-pine);
+  border-color: var(--accent-pine);
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.doctor-card {
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  background-color: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doctor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.doctor-name {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.doctor-spec-tag {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent-pine);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.slots-badge {
+  text-align: right;
+  line-height: 1.1;
+}
+
+.slots-count {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-pine);
+  font-family: var(--font-mono);
+}
+
+.slots-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.doctor-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--bg-subtle);
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.schedule-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-schedule-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.day-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.time-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.more-chips {
+  font-size: 11px;
+  color: var(--text-dim);
+  align-self: center;
+  margin-left: 2px;
+}
+
+.no-slots {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Appointments Table
+   ========================================================================== */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.appointments-table th {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-line);
+}
+
+.appointments-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-line);
+  vertical-align: middle;
+}
+
+.table-row {
+  transition: background-color 0.8s ease;
+}
+
+.table-row.row-highlight {
+  background-color: #DCFCE7 !important;
+}
+
+.table-row.row-cancelled td {
+  color: var(--text-dim);
+}
+
+.apt-id {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 13px;
+}
+
+.patient-name {
+  font-weight: 500;
+}
+
+.phone-masked {
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.doc-main {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.doc-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.time-cell {
+  font-weight: 600;
+}
+
+.status-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-tag.active {
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+}
+
+.status-tag.cancelled {
+  background-color: var(--status-cancelled-bg);
+  color: var(--status-cancelled-text);
+}
+
+/* Utility Monospace / Numerals */
+.mono-time, .mono-text {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Phone-Style Call Modal Screen
+   ========================================================================== */
+
+.phone-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(20, 28, 36, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.phone-chassis {
+  width: 380px;
+  max-width: 100%;
+  height: 680px;
+  max-height: 92vh;
+  background-color: #FFFFFF;
+  border: 4px solid #2B3440;
+  border-radius: var(--radius-phone);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-notch {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAFAFA;
+}
+
+.phone-earpiece {
+  width: 48px;
+  height: 4px;
+  background-color: #CBD5E1;
+  border-radius: 999px;
+}
+
+.phone-header {
+  padding: 16px 20px 12px;
+  text-align: center;
+  background-color: #FAFAFA;
+  border-bottom: 1px solid var(--border-line);
+}
+
+.caller-avatar {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 8px;
+  background-color: var(--accent-pine);
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.caller-name {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.caller-org {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.call-status-indicator {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.status-ringing-text {
+  color: #D97706;
+  font-weight: 500;
+}
+
+.status-connected-timer {
+  font-weight: 600;
+  color: var(--accent-pine);
+}
+
+.status-ended-text {
+  color: var(--text-dim);
+}
+
+.status-error-text {
+  color: #DC2626;
+  font-weight: 600;
+}
+
+/* Middle Screen Content */
+.phone-screen-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  overflow: hidden;
+  background-color: #FAF8F5;
+  position: relative;
+}
+
+.waveform-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-line);
+  margin-bottom: 12px;
+}
+
+.waveform-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.speaker-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Confirmation Slide-in Card */
+.confirmation-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  border: 1px solid var(--border-line);
+  animation: slideDown 0.35s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.confirmation-card.booked {
+  background-color: var(--status-active-bg);
+  border-left: 4px solid var(--status-active-text);
+}
+
+.confirmation-card.cancelled {
+  background-color: var(--status-cancelled-bg);
+  border-left: 4px solid var(--status-cancelled-text);
+}
+
+.card-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.confirmation-card.booked .card-badge {
+  color: var(--status-active-text);
+}
+
+.confirmation-card.cancelled .card-badge {
+  color: var(--status-cancelled-text);
+}
+
+.card-details {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.card-doc {
+  font-weight: 600;
+}
+
+.card-datetime {
+  color: var(--text-muted);
+}
+
+/* Phone In-App Transcript */
+.phone-transcript-viewport {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.phone-transcript-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.phone-bubble {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 88%;
+}
+
+.phone-bubble.user {
+  align-self: flex-end;
+  background-color: #E2E8F0;
+  color: var(--text-main);
+  border-bottom-right-radius: 2px;
+}
+
+.phone-bubble.bot {
+  align-self: flex-start;
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border: 1px solid var(--border-line);
+  border-bottom-left-radius: 2px;
+}
+
+.phone-bubble.interim {
+  opacity: 0.75;
+}
+
+.phone-bubble-sender {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  color: var(--text-dim);
+}
+
+/* Phone Error & Ended Views */
+.phone-error-view, .phone-ended-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.error-icon {
+  color: #DC2626;
+  margin-bottom: 12px;
+}
+
+.error-title {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.error-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: var(--accent-pine);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ended-summary {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ended-note {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Bottom Controls */
+.phone-controls {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--border-line);
+}
+
+.control-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color var(--transition-smooth);
+}
+
+.control-circle:active {
+  transform: scale(0.94);
+}
+
+.control-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mute-button {
+  background-color: #F1F5F9;
+  color: #334155;
+}
+
+.mute-button.muted {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.end-call-button {
+  background-color: #DC2626;
+  color: #FFFFFF;
+  width: 56px;
+  height: 56px;
+}
+
+.end-call-button:hover {
+  background-color: #B91C1C;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 960px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-left {
+    position: static;
+  }
+
+  .transcript-panel {
+    height: 380px;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .clinic-app {
+    padding: 0 14px 28px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Full screen phone on mobile */
+  .phone-modal-overlay {
+    padding: 0;
+  }
+
+  .phone-chassis {
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+}
