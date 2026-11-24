@@ -200,11 +200,45 @@ export const App: React.FC = () => {
       });
       localStreamRef.current = stream;
 
-      // 2. Initialize SmallWebRTCTransport
+      // 2. STUN & TURN servers for reliable WebRTC NAT & cloud relay traversal
+      let iceServers: RTCIceServer[] = [
+        {
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:openrelay.metered.ca:80",
+          ],
+        },
+        {
+          urls: [
+            "turn:openrelay.metered.ca:80",
+            "turn:openrelay.metered.ca:443",
+            "turn:openrelay.metered.ca:443?transport=tcp",
+            "turns:openrelay.metered.ca:443",
+          ],
+          username: "openrelayproject",
+          credential: "openrelayproject",
+        },
+      ];
+
+      try {
+        const iceRes = await fetch("/api/ice-servers");
+        if (iceRes.ok) {
+          const customServers = await iceRes.json();
+          if (Array.isArray(customServers) && customServers.length > 0) {
+            iceServers = customServers;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch /api/ice-servers, using default ICE servers:", err);
+      }
+
+      // Initialize SmallWebRTCTransport with STUN and TURN
       const transport = new SmallWebRTCTransport({
         webrtcRequestParams: {
           endpoint: "/api/offer",
         },
+        iceServers,
       });
 
       // 3. Initialize PipecatClient (voice-only: mic enabled, camera disabled)

@@ -14,15 +14,14 @@ dist/
 .vite/
 
 # Environment variables & secrets
-.env
 *.local
 *.pem
 
 # IDE & OS
-.vscode/
 .idea/
 .DS_Store
 Thumbs.db
 
 # Test artifacts / screenshots
 screenshots/
+config.bat

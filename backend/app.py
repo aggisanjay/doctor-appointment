@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from loguru import logger
+from aiortc import RTCIceServer
 from pipecat.transports.smallwebrtc.request_handler import (
     SmallWebRTCPatchRequest,
     SmallWebRTCRequest,
@@ -27,11 +28,44 @@ from backend.tools import (
 load_dotenv()
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
-ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
+ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "EXAVITQu4vr4xnSDxMaL")
 
-webrtc_handler = SmallWebRTCRequestHandler()
+
+def get_ice_servers() -> list[RTCIceServer]:
+    """Builds ICE servers with STUN and TURN for reliable WebRTC NAT traversal in cloud deployments."""
+    custom_turn = os.getenv("TURN_URLS")
+    if custom_turn:
+        urls = [u.strip() for u in custom_turn.split(",")]
+        username = os.getenv("TURN_USERNAME")
+        credential = os.getenv("TURN_CREDENTIAL")
+        return [
+            RTCIceServer(urls=["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"]),
+            RTCIceServer(urls=urls, username=username, credential=credential),
+        ]
+    return [
+        RTCIceServer(
+            urls=[
+                "stun:stun.l.google.com:19302",
+                "stun:stun1.l.google.com:19302",
+                "stun:openrelay.metered.ca:80",
+            ]
+        ),
+        RTCIceServer(
+            urls=[
+                "turn:openrelay.metered.ca:80",
+                "turn:openrelay.metered.ca:443",
+                "turn:openrelay.metered.ca:443?transport=tcp",
+                "turns:openrelay.metered.ca:443",
+            ],
+            username="openrelayproject",
+            credential="openrelayproject",
+        ),
+    ]
+
+
+webrtc_handler = SmallWebRTCRequestHandler(ice_servers=get_ice_servers())
 
 
 @asynccontextmanager
@@ -89,6 +123,20 @@ async def get_doctors():
 async def get_appointments():
     """Get all booked and cancelled appointments."""
     return store.get_all_appointments()
+
+
+@app.get("/api/ice-servers")
+async def get_ice_servers_endpoint():
+    """Returns ICE servers (STUN & TURN) for browser WebRTC clients."""
+    servers = []
+    for s in get_ice_servers():
+        entry = {"urls": s.urls}
+        if s.username:
+            entry["username"] = s.username
+        if s.credential:
+            entry["credential"] = s.credential
+        servers.append(entry)
+    return JSONResponse(content=servers)
 
 
 @app.post("/api/test/action")
